@@ -23,6 +23,13 @@ class Key(models.Model):
         related_name='submitted_keys',
         on_delete=models.CASCADE
     )
+    updated_by = models.ForeignKey(
+        User, # Django User model
+        related_name='updated_keys',
+        null=True, # Store blank as NULL
+        blank=True, # Not required
+        on_delete=models.CASCADE
+    )
     redeemed_by = models.ForeignKey(
         User, # Django User model
         related_name='redeemed_keys',

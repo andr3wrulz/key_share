@@ -1,0 +1,57 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Andrew's Key Share</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
+        <link rel="stylesheet" href="{% static 'css/common.css' %}">
+    </head>
+    <body>
+        
+        <!-- Navigation Bar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+            <div class="container">
+
+                <!-- Title -->
+                <a class="navbar-brand" href="/">Andrew's Key Share</a>
+
+                <!-- Collapse/Uncollapse Button -->
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Navbar Items -->
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <div class="navbar-nav ml-auto">
+                        {% if user.is_authenticated %}
+                            <!-- Show submit and logout buttons if logged in -->
+                            <p class="navbar-text">Hello, {{ user.username }}</p>
+                            <a class="nav-item nav-link" href="{% url 'key_new' %}">Submit a key</a>
+                            <a class="nav-item nav-link" href="{% url 'logout' %}">Log out</a>
+                        {% else %}
+                            <!-- Show only login button if not logged in -->
+                            <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+                        {% endif %}
+                        </div>
+                </div>
+                <!-- End Navbar Items-->
+
+            </div>
+        </nav>
+        <!-- End Navigation Bar -->
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
+    </body>
+</html>

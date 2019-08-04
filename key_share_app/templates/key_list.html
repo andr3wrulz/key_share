@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <!-- Search/Filtering -->
+    <div>
+        {% if show_redeemed == "yes" %}
+            <a href="?show_redeemed=no">Hide Redeemed Keys</a>
+        {% else %}
+            <a href="?show_redeemed=yes">Show Redeemed Keys</a>
+        {% endif %}
+    </div>
+
+    <!-- Key Table -->
+    <div>
+        <table class="table table-striped" data-toggle="table" data-sort-name="created" data-sort-order="desc" data-search="true" data-pagination="true">
+            <thead class="thead-dark">
+                <tr>
+                    <th data-field="name" data-sortable="true">Game Name</th>
+                    <th data-field="created" data-sortable="true">Added</th>
+                    <th data-field="notes">Notes</th>
+                    <th data-field="redeemed" data-sortable="true">Redeemed</th>
+                    <th data-field="created_by" data-sortable="true">Added By</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for key in key_list %}
+                    <tr>
+                        <th><a href="{% url 'key_detail' pk=key.pk %}">{{ key.name }}</a></td>
+                        <td>{{ key.created }}</td>
+                        <td>{{ key.notes }}</td>
+                        <td>{{ key.redeemed }}</td>
+                        <td>{{ key.created_by }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

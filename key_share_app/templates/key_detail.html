@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="key-detail">
+    <div>
+        {% if key.redeemed %}
+            This key has been redeemed by {{ key.redeemed_by }} on {{ key.redeemed }}!
+        {% endif %}
+    </div>
+    <div>
+        {% if user.is_authenticated %}
+            <div>
+                <a class="btn btn-default" href="{% url 'key_edit' pk=key.pk %}">Edit<span class="glyphicon glyphicon-pencil"></span></a>
+                <a class="btn btn-default" href="{% url 'key_delete' pk=key.pk %}">Delete<span class="glyphicon glyphicon-remove"></span></a>
+                <br>
+            </div>
+        {% endif %}
+        Game: {{ key.name }}<br>
+        Submitted at {{ key.created }} by {{ key.created_by }}<br>
+        {% if key.last_updated %}
+            Updated at {{ key.last_updated }} by {{ key.updated_by }}<br>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
