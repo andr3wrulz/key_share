@@ -17,8 +17,9 @@
                 <tr>
                     <th data-field="name" data-sortable="true">Game Name</th>
                     <th data-field="created" data-sortable="true">Added</th>
-                    <th data-field="notes">Notes</th>
-                    <th data-field="redeemed" data-sortable="true">Redeemed</th>
+                    <th data-field="rating" data-sortable="true">Rating</th>
+                    <th data-field="genres">Genre(s)</th>
+                    {% if show_redeemed == "yes" %}<th data-field="redeemed" data-sortable="true">Redeemed</th>{% endif %}
                     <th data-field="created_by" data-sortable="true">Added By</th>
                 </tr>
             </thead>
@@ -28,8 +29,21 @@
                     <tr>
                         <th><a href="{% url 'key_detail' pk=key.pk %}">{{ key.name }}</a></td>
                         <td>{{ key.created|date:"Y-m-d H:s" }}</td>
-                        <td>{{ key.notes }}</td>
-                        <td>{%if key.redeemed %}Yes{% else %}No{% endif %}</td>
+                        <td>
+                            {%if key.game_info_rating %}
+                                {{ key.game_info_rating }}% ({{ key.game_info_rating_count }} sources)
+                            {% else %}
+                                0% (0 sources)
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if key.game_info_genres %}
+                                {{ key.game_info_genres }}
+                            {% else %}
+                                Not available
+                            {% endif %}
+                        </td>
+                        {% if show_redeemed == "yes" %}<td>{%if key.redeemed %}Yes{% else %}No{% endif %}</td>{% endif %}
                         <td>{{ key.created_by }}</td>
                     </tr>
                 {% endfor %}

@@ -11,10 +11,10 @@
         <div class="row">
             <!-- Left Pane (cover, title, studio, genres) -->
             <div class="col-md-7">
-                {% if game_info.screenshots %}
+                {% if screenshots %}
                 <div id="screenshotCarouselIndicators" class="carousel slide" data-ride="carousel">
                     <ol class="carousel-indicators">
-                        {% for ss in game_info.screenshots %}
+                        {% for ss in screenshots %}
                             {% if forloop.counter0 == 0 %}
                             <li data-target="#screenshotCarouselIndicators" data-slide-to="0" class="active"></li>
                             {% else %}
@@ -23,7 +23,7 @@
                         {% endfor %}
                     </ol>
                     <div class="carousel-inner">
-                        {% for ss in game_info.screenshots %}
+                        {% for ss in screenshots %}
                             {% if forloop.counter0 == 0 %}
                             <div class="carousel-item active">
                             {% else %}
@@ -83,14 +83,14 @@
                 </div>
                 <div class="text-left">
                     <!-- Summary -->
-                    {% if game_info.summary %}
+                    {% if key.game_info_summary %}
                     <h5>Summary:</h5>
-                        <p>{{ game_info.summary }}</p>
+                        <p>{{ key.game_info_summary }}</p>
                     {% endif %}
                     <!-- Storyline -->
-                    {% if game_info.storyline %}
+                    {% if key.game_info_storyline %}
                     <h5>Storyline:</h5>
-                        <p>{{ game_info.storyline }}</p>
+                        <p>{{ key.game_info_storyline }}</p>
                     {% endif %}
                 </div>
             </div>
@@ -100,97 +100,74 @@
             <div class="col-md-5">
                 <div>
                     <!-- Cover -->
-                    {% if game_info.cover %}<img src="{{ game_info.cover.url }}">{% endif %}
+                    {% if key.game_info_cover_url %}<img src="{{ key.game_info_cover_url }}">{% endif %}
                     <!-- Name -->
-                    {% if game_info.name %}
-                        <h3>{{ game_info.name }}</h3>
+                    {% if key.game_info_name %}
+                        <h3>{{ key.game_info_name }}</h3>
                     {% else %}
                         <h3>{{ key.name }}</h3>
                     {% endif %}
                     <!-- Info Table -->
                     <table class="table table-striped">
                         <!-- Game type -->
-                        {% if game_info.type %}
+                        {% if key.game_info_type %}
                             <tr>
                                 <th>Game Type</th>
-                                <td>{{ game_info.type }}</td>
+                                <td>{{ key.game_info_type }}</td>
                             </tr>
                         {% endif %}
                         <!-- Studio -->
-                        {% if game_info.studio %}
+                        {% if key.game_info_studio %}
                             <tr>
                                 <th>Studio</th>
-                                <td>{{ game_info.studio }}</td>
+                                <td>{{ key.game_info_studio }}</td>
                             </tr>
                         {% endif %}
                         <!-- Release Date -->
-                        {% if game_info.release_date %}
+                        {% if key.game_info_release_date %}
                             <tr>
                                 <th>Release Date</th>
-                                <td>{{ game_info.release_date|date:"M j, Y" }}</td>
+                                <td>{{ key.game_info_release_date|date:"M j, Y" }}</td>
                             </tr>
                         {% endif %}
                         <!-- Genres -->
-                        {% if game_info.genres %}
+                        {% if key.game_info_genres %}
                             <tr>
                                 <th>Genres</th>
-                                <td>{{ game_info.genres|join:', ' }}</td>
+                                <td>{{ key.game_info_genres }}</td>
+                            </tr>
+                        {% endif %}
+                        <!-- Keywords -->
+                        {% if key.game_info_keywords %}
+                            <tr>
+                                <th>Keywords</th>
+                                <td>{{ key.game_info_keywords }}</td>
                             </tr>
                         {% endif %}
                         <!-- Ratings -->
-                        {% if game_info.rating %}
+                        {% if key.game_info_rating %}
                             <tr>
                                 <th>Ratings</th>
-                                <td>{{ game_info.rating}}%{% if game_info.rating_count %} ({{ game_info.rating_count }} sources){% endif %}</td>
+                                <td>{{ key.game_info_rating}}%{% if key.game_info_rating_count %} ({{ key.game_info_rating_count }} sources){% endif %}</td>
                             </tr>
                         {% endif %}
                         <!-- Websites -->
-                        {% if game_info.igdbLink %}
+                        {% if key.game_info_igdb_url %}
                             <tr>
                                 <th>IGDB</th>
-                                <td><a href="{{ game_info.igdbLink }}">Link</a></td>
+                                <td><a href="{{ key.game_info_igdb_url }}">Link</a></td>
                             </tr>
                         {% endif %}
-                        {% if game_info.websites.official %}
+                        {% if key.game_info_official_url %}
                             <tr>
                                 <th>Official Website</th>
-                                <td><a href="{{ game_info.websites.official }}">Link</a></td>
+                                <td><a href="{{ key.game_info_official_url }}">Link</a></td>
                             </tr>
                         {% endif %}
-                        {% if game_info.websites.steam %}
+                        {% if key.game_info_steam_url %}
                             <tr>
                                 <th>Steam Store</th>
-                                <td><a href="{{ game_info.websites.steam }}">Link</a></td>
-                            </tr>
-                        {% endif %}
-                        {% if game_info.websites.wikipedia %}
-                            <tr>
-                                <th>Wikipedia</th>
-                                <td><a href="{{ game_info.websites.wikipedia }}">Link</a></td>
-                            </tr>
-                        {% endif %}
-                        {% if game_info.websites.wikia %}
-                            <tr>
-                                <th>Wikia</th>
-                                <td><a href="{{ game_info.websites.wikia }}">Link</a></td>
-                            </tr>
-                        {% endif %}
-                        {% if game_info.websites.twitter %}
-                            <tr>
-                                <th>Twitter</th>
-                                <td><a href="{{ game_info.websites.twitter }}">Link</a></td>
-                            </tr>
-                        {% endif %}
-                        {% if game_info.websites.youtube %}
-                            <tr>
-                                <th>Youtube</th>
-                                <td><a href="{{ game_info.websites.youtube }}">Link</a></td>
-                            </tr>
-                        {% endif %}
-                        {% if game_info.websites.facebook %}
-                            <tr>
-                                <th>Facebook</th>
-                                <td><a href="{{ game_info.websites.facebook }}">Link</a></td>
+                                <td><a href="{{ key.game_info_steam_url }}">Link</a></td>
                             </tr>
                         {% endif %}
                         <!-- End Websites -->
