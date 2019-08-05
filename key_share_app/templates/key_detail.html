@@ -9,11 +9,38 @@
     </div>
     <div>
         <div class="row">
-            
-        </div>
-        <div class="row">
             <!-- Left Pane (cover, title, studio, genres) -->
-            <div class="col-md-8">
+            <div class="col-md-7">
+                {% if game_info.screenshots %}
+                <div id="screenshotCarouselIndicators" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        {% for ss in game_info.screenshots %}
+                            {% if forloop.counter0 == 0 %}
+                            <li data-target="#screenshotCarouselIndicators" data-slide-to="0" class="active"></li>
+                            {% else %}
+                            <li data-target="#screenshotCarouselIndicators" data-slide-to="{{ forloop.counter0 }}"></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ol>
+                    <div class="carousel-inner">
+                        {% for ss in game_info.screenshots %}
+                            {% if forloop.counter0 == 0 %}
+                            <div class="carousel-item active">
+                            {% else %}
+                            <div class="carousel-item">
+                            {% endif %}
+                                <img src="{{ ss }}" class="d-block w-100">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <a class="carousel-control-prev" href="#screenshotCarouselIndicators" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    </a>
+                    <a class="carousel-control-next" href="#screenshotCarouselIndicators" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    </a>
+                </div>
+                {% endif %}
                 <div>
                     <!-- Key Info -->
                     <table class="table table-striped">
@@ -27,20 +54,18 @@
                         </tr>
                         <tr>
                             <th>Submitted</th>
-                            <td>{{ key.created }}</td>
+                            <td>{{ key.created }} by {{ key.created_by }}</td>
                         </tr>
+                        {% if key.redeemed %}
                         <tr>
-                            <th>Submitter</th>
-                            <td>{{ key.created_by }}</td>
+                            <th>Redeemed</th>
+                            <td>{{ key.redeemed }} by {{ key.redeemed_by }}</td>
                         </tr>
+                        {% endif %}
                         {% if key.last_updated and key.last_updated != key.created %}
                         <tr>
                             <th>Entry Updated</th>
-                            <td>{{ key.last_updated }}</td>
-                        </tr>
-                        <tr>
-                            <th>Entry Updator</th>
-                            <td>{{ key.updated_by }}</td>
+                            <td>{{ key.last_updated }} by {{ key.updated_by }}</td>
                         </tr>
                         {% endif %}
                     </table>
@@ -52,15 +77,27 @@
                         <div>
                             <a class="btn btn-success" href="{% url 'key_redeem' pk=key.pk %}">Redeem</a>
                             <a class="btn btn-secondary pull-right" href="{% url 'key_edit' pk=key.pk %}">Edit</a>
-                            <a class="btn btn-danger pull-right" href="{% url 'key_delete' pk=key.pk %}">Delete</a>
+                            <!--<a class="btn btn-danger pull-right" href="{% url 'key_delete' pk=key.pk %}">Delete</a>-->
                         </div>
+                    {% endif %}
+                </div>
+                <div class="text-left">
+                    <!-- Summary -->
+                    {% if game_info.summary %}
+                    <h5>Summary:</h5>
+                        <p>{{ game_info.summary }}</p>
+                    {% endif %}
+                    <!-- Storyline -->
+                    {% if game_info.storyline %}
+                    <h5>Storyline:</h5>
+                        <p>{{ game_info.storyline }}</p>
                     {% endif %}
                 </div>
             </div>
             <!-- End Left Pane -->
 
             <!-- Right Pane (key info, actions)-->
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div>
                     <!-- Cover -->
                     {% if game_info.cover %}<img src="{{ game_info.cover.url }}">{% endif %}
@@ -72,6 +109,13 @@
                     {% endif %}
                     <!-- Info Table -->
                     <table class="table table-striped">
+                        <!-- Game type -->
+                        {% if game_info.type %}
+                            <tr>
+                                <th>Game Type</th>
+                                <td>{{ game_info.type }}</td>
+                            </tr>
+                        {% endif %}
                         <!-- Studio -->
                         {% if game_info.studio %}
                             <tr>
@@ -83,7 +127,7 @@
                         {% if game_info.release_date %}
                             <tr>
                                 <th>Release Date</th>
-                                <td>{{ game_info.release_date }}</td>
+                                <td>{{ game_info.release_date|date:"M j, Y" }}</td>
                             </tr>
                         {% endif %}
                         <!-- Genres -->
@@ -93,61 +137,65 @@
                                 <td>{{ game_info.genres|join:', ' }}</td>
                             </tr>
                         {% endif %}
+                        <!-- Ratings -->
+                        {% if game_info.rating %}
+                            <tr>
+                                <th>Ratings</th>
+                                <td>{{ game_info.rating}}%{% if game_info.rating_count %} ({{ game_info.rating_count }} sources){% endif %}</td>
+                            </tr>
+                        {% endif %}
                         <!-- Websites -->
+                        {% if game_info.igdbLink %}
+                            <tr>
+                                <th>IGDB</th>
+                                <td><a href="{{ game_info.igdbLink }}">Link</a></td>
+                            </tr>
+                        {% endif %}
                         {% if game_info.websites.official %}
                             <tr>
                                 <th>Official Website</th>
-                                <td><a href="{{ game_info.websites.official }}">{{ game_info.websites.official }}</a></td>
+                                <td><a href="{{ game_info.websites.official }}">Link</a></td>
                             </tr>
                         {% endif %}
                         {% if game_info.websites.steam %}
                             <tr>
                                 <th>Steam Store</th>
-                                <td><a href="{{ game_info.websites.steam }}">{{ game_info.websites.steam }}</a></td>
+                                <td><a href="{{ game_info.websites.steam }}">Link</a></td>
                             </tr>
                         {% endif %}
                         {% if game_info.websites.wikipedia %}
                             <tr>
                                 <th>Wikipedia</th>
-                                <td><a href="{{ game_info.websites.wikipedia }}">{{ game_info.websites.wikipedia }}</a></td>
+                                <td><a href="{{ game_info.websites.wikipedia }}">Link</a></td>
                             </tr>
                         {% endif %}
                         {% if game_info.websites.wikia %}
                             <tr>
                                 <th>Wikia</th>
-                                <td><a href="{{ game_info.websites.wikia }}">{{ game_info.websites.wikia }}</a></td>
+                                <td><a href="{{ game_info.websites.wikia }}">Link</a></td>
                             </tr>
                         {% endif %}
                         {% if game_info.websites.twitter %}
                             <tr>
                                 <th>Twitter</th>
-                                <td><a href="{{ game_info.websites.twitter }}">{{ game_info.websites.twitter }}</a></td>
+                                <td><a href="{{ game_info.websites.twitter }}">Link</a></td>
                             </tr>
                         {% endif %}
                         {% if game_info.websites.youtube %}
                             <tr>
                                 <th>Youtube</th>
-                                <td><a href="{{ game_info.websites.youtube }}">{{ game_info.websites.youtube }}</a></td>
+                                <td><a href="{{ game_info.websites.youtube }}">Link</a></td>
                             </tr>
                         {% endif %}
                         {% if game_info.websites.facebook %}
                             <tr>
                                 <th>Facebook</th>
-                                <td><a href="{{ game_info.websites.facebook }}">{{ game_info.websites.facebook }}</a></td>
+                                <td><a href="{{ game_info.websites.facebook }}">Link</a></td>
                             </tr>
                         {% endif %}
                         <!-- End Websites -->
                     </table>
                     <!-- End Info Table -->
-                </div>
-                <div class="text-left">
-                    <!-- Summary -->
-                    <h5>Summary:</h5>
-                    {% if game_info.summary %}
-                        <p>{{ game_info.summary }}</p>
-                    {% else %}
-                        <p>No summary found.</p>
-                    {% endif %}
                 </div>
             </div> 
         </div>

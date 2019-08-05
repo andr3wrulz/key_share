@@ -27,9 +27,9 @@
                 {% for key in key_list %}
                     <tr>
                         <th><a href="{% url 'key_detail' pk=key.pk %}">{{ key.name }}</a></td>
-                        <td>{{ key.created }}</td>
+                        <td>{{ key.created|date:"Y-m-d H:s" }}</td>
                         <td>{{ key.notes }}</td>
-                        <td>{{ key.redeemed }}</td>
+                        <td>{%if key.redeemed %}Yes{% else %}No{% endif %}</td>
                         <td>{{ key.created_by }}</td>
                     </tr>
                 {% endfor %}
