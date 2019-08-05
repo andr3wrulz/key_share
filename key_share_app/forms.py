@@ -7,3 +7,6 @@ class KeyForm(forms.ModelForm):
     class Meta:
         model = Key
         fields = ('name', 'key', 'notes')
+        labels = {
+            'name': 'Game'
+        }

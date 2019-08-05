@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h3>Here is your key for {{ key.name }}</h3>
+    <code>{{ key.key }}</code>
+    <p>Please mark this key as redeemed if you use it!</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+{% endblock %}

@@ -1,25 +1,156 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="key-detail">
+<div class="container">
     <div>
         {% if key.redeemed %}
             This key has been redeemed by {{ key.redeemed_by }} on {{ key.redeemed }}!
         {% endif %}
     </div>
     <div>
-        {% if user.is_authenticated %}
-            <div>
-                <a class="btn btn-default" href="{% url 'key_edit' pk=key.pk %}">Edit<span class="glyphicon glyphicon-pencil"></span></a>
-                <a class="btn btn-default" href="{% url 'key_delete' pk=key.pk %}">Delete<span class="glyphicon glyphicon-remove"></span></a>
-                <br>
+        <div class="row">
+            
+        </div>
+        <div class="row">
+            <!-- Left Pane (cover, title, studio, genres) -->
+            <div class="col-md-8">
+                <div>
+                    <!-- Key Info -->
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Game Name (as entered)</th>
+                            <td>{{ key.name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Notes</th>
+                            <td>{{ key.notes }}</td>
+                        </tr>
+                        <tr>
+                            <th>Submitted</th>
+                            <td>{{ key.created }}</td>
+                        </tr>
+                        <tr>
+                            <th>Submitter</th>
+                            <td>{{ key.created_by }}</td>
+                        </tr>
+                        {% if key.last_updated and key.last_updated != key.created %}
+                        <tr>
+                            <th>Entry Updated</th>
+                            <td>{{ key.last_updated }}</td>
+                        </tr>
+                        <tr>
+                            <th>Entry Updator</th>
+                            <td>{{ key.updated_by }}</td>
+                        </tr>
+                        {% endif %}
+                    </table>
+                    <!-- End Key Info -->
+                </div>
+                <div>
+                    <!-- Action Buttons -->
+                    {% if user.is_authenticated %}
+                        <div>
+                            <a class="btn btn-success" href="{% url 'key_redeem' pk=key.pk %}">Redeem</a>
+                            <a class="btn btn-secondary pull-right" href="{% url 'key_edit' pk=key.pk %}">Edit</a>
+                            <a class="btn btn-danger pull-right" href="{% url 'key_delete' pk=key.pk %}">Delete</a>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
-        {% endif %}
-        Game: {{ key.name }}<br>
-        Submitted at {{ key.created }} by {{ key.created_by }}<br>
-        {% if key.last_updated %}
-            Updated at {{ key.last_updated }} by {{ key.updated_by }}<br>
-        {% endif %}
+            <!-- End Left Pane -->
+
+            <!-- Right Pane (key info, actions)-->
+            <div class="col-md-4">
+                <div>
+                    <!-- Cover -->
+                    {% if game_info.cover %}<img src="{{ game_info.cover.url }}">{% endif %}
+                    <!-- Name -->
+                    {% if game_info.name %}
+                        <h3>{{ game_info.name }}</h3>
+                    {% else %}
+                        <h3>{{ key.name }}</h3>
+                    {% endif %}
+                    <!-- Info Table -->
+                    <table class="table table-striped">
+                        <!-- Studio -->
+                        {% if game_info.studio %}
+                            <tr>
+                                <th>Studio</th>
+                                <td>{{ game_info.studio }}</td>
+                            </tr>
+                        {% endif %}
+                        <!-- Release Date -->
+                        {% if game_info.release_date %}
+                            <tr>
+                                <th>Release Date</th>
+                                <td>{{ game_info.release_date }}</td>
+                            </tr>
+                        {% endif %}
+                        <!-- Genres -->
+                        {% if game_info.genres %}
+                            <tr>
+                                <th>Genres</th>
+                                <td>{{ game_info.genres|join:', ' }}</td>
+                            </tr>
+                        {% endif %}
+                        <!-- Websites -->
+                        {% if game_info.websites.official %}
+                            <tr>
+                                <th>Official Website</th>
+                                <td><a href="{{ game_info.websites.official }}">{{ game_info.websites.official }}</a></td>
+                            </tr>
+                        {% endif %}
+                        {% if game_info.websites.steam %}
+                            <tr>
+                                <th>Steam Store</th>
+                                <td><a href="{{ game_info.websites.steam }}">{{ game_info.websites.steam }}</a></td>
+                            </tr>
+                        {% endif %}
+                        {% if game_info.websites.wikipedia %}
+                            <tr>
+                                <th>Wikipedia</th>
+                                <td><a href="{{ game_info.websites.wikipedia }}">{{ game_info.websites.wikipedia }}</a></td>
+                            </tr>
+                        {% endif %}
+                        {% if game_info.websites.wikia %}
+                            <tr>
+                                <th>Wikia</th>
+                                <td><a href="{{ game_info.websites.wikia }}">{{ game_info.websites.wikia }}</a></td>
+                            </tr>
+                        {% endif %}
+                        {% if game_info.websites.twitter %}
+                            <tr>
+                                <th>Twitter</th>
+                                <td><a href="{{ game_info.websites.twitter }}">{{ game_info.websites.twitter }}</a></td>
+                            </tr>
+                        {% endif %}
+                        {% if game_info.websites.youtube %}
+                            <tr>
+                                <th>Youtube</th>
+                                <td><a href="{{ game_info.websites.youtube }}">{{ game_info.websites.youtube }}</a></td>
+                            </tr>
+                        {% endif %}
+                        {% if game_info.websites.facebook %}
+                            <tr>
+                                <th>Facebook</th>
+                                <td><a href="{{ game_info.websites.facebook }}">{{ game_info.websites.facebook }}</a></td>
+                            </tr>
+                        {% endif %}
+                        <!-- End Websites -->
+                    </table>
+                    <!-- End Info Table -->
+                </div>
+                <div class="text-left">
+                    <!-- Summary -->
+                    <h5>Summary:</h5>
+                    {% if game_info.summary %}
+                        <p>{{ game_info.summary }}</p>
+                    {% else %}
+                        <p>No summary found.</p>
+                    {% endif %}
+                </div>
+            </div> 
+        </div>
     </div>
 </div>
 {% endblock %}
