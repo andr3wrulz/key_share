@@ -144,11 +144,25 @@
                                 <td>{{ key.game_info_keywords }}</td>
                             </tr>
                         {% endif %}
+                        <!-- Time to Beat -->
+                        {% if key.game_info_time_to_beat %}
+                            <tr>
+                                <th>Time to Beat</th>
+                                <td>{{ key.game_info_time_to_beat }}</td>
+                            </tr>
+                        {% endif %}
                         <!-- Ratings -->
                         {% if key.game_info_rating %}
                             <tr>
                                 <th>Ratings</th>
                                 <td>{{ key.game_info_rating}}%{% if key.game_info_rating_count %} ({{ key.game_info_rating_count }} sources){% endif %}</td>
+                            </tr>
+                        {% endif %}
+                        <!-- Similar Games -->
+                        {% if key.game_info_similar_games %}
+                            <tr>
+                                <th>Similar Games</th>
+                                <td>{{ key.game_info_similar_games}}</td>
                             </tr>
                         {% endif %}
                         <!-- Websites -->

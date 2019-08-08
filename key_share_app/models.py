@@ -86,9 +86,9 @@ class Key(models.Model):
     game_info_rating = models.DecimalField(decimal_places=2, max_digits=5, null=True, blank=True)
     game_info_rating_count = models.IntegerField(null=True, blank=True)
     game_info_screenshots = models.TextField(null=True, blank=True)
+    game_info_time_to_beat = models.CharField(max_length=100, null=True, blank=True)
     # Videos
     # Multiplayer modes
-    # Time to beat
 
     def __str__(self):
         return self.name
@@ -133,7 +133,7 @@ class Key(models.Model):
 
             # ===== Genre lookup =====
             if game[0].get("genres") is not None:
-                genre_id_string = ', '.join(map(str, game[0].get("genres")[:10])).strip('[]') # Join ids together like '7, 8, 31, 32'
+                genre_id_string = ', '.join(map(str, game[0].get("genres")[:10])).strip('[]') # Join ids together like '7, 8, 31, 32', limit to 10 entries
                 genres = requests.get(
                     'https://api-v3.igdb.com/genres',
                     headers={'user-key':'2ba120e8696301c4263b2b19e68e59e6'},
@@ -148,7 +148,7 @@ class Key(models.Model):
 
             # ===== Involved company lookup =====
             if game[0].get("involved_companies") is not None:
-                involved_companies_string = ', '.join(map(str, game[0].get("involved_companies")[:10])).strip('[]') # Join ids together like '7, 8, 31, 32'
+                involved_companies_string = ', '.join(map(str, game[0].get("involved_companies")[:10])).strip('[]') # Join ids together like '7, 8, 31, 32', limit to 10 entries
                 involved_companies = requests.get(
                     'https://api-v3.igdb.com/involved_companies',
                     headers={'user-key':'2ba120e8696301c4263b2b19e68e59e6'},
@@ -167,7 +167,7 @@ class Key(models.Model):
 
             # ===== Keyword lookup =====
             if game[0].get("keywords") is not None:
-                keyword_string = ', '.join(map(str, game[0].get("keywords")[:10])).strip('[]') # Join ids together like '7, 8, 31, 32'
+                keyword_string = ', '.join(map(str, game[0].get("keywords")[:10])).strip('[]') # Join ids together like '7, 8, 31, 32', limit to 10 entries
                 keywords = requests.get(
                     'https://api-v3.igdb.com/keywords',
                     headers={'user-key':'2ba120e8696301c4263b2b19e68e59e6'},
@@ -183,7 +183,7 @@ class Key(models.Model):
 
             # ===== Screenshot lookup =====
             if game[0].get("screenshots") is not None:
-                screenshot_string = ', '.join(map(str, game[0].get("screenshots")[:10])).strip('[]') # Join ids together like '7, 8, 31, 32'
+                screenshot_string = ', '.join(map(str, game[0].get("screenshots")[:10])).strip('[]') # Join ids together like '7, 8, 31, 32', limit to 10 entries
                 screenshot = requests.get(
                     'https://api-v3.igdb.com/screenshots',
                     headers={'user-key':'2ba120e8696301c4263b2b19e68e59e6'},
@@ -197,14 +197,42 @@ class Key(models.Model):
                 self.game_info_screenshots = ' '.join([re.sub(r't_thumb','t_1080p',ss.get("url")) for ss in screenshot])
 
             # ===== Similar game lookup =====
+            if game[0].get("similar_games") is not None:
+                similar_games_string = ', '.join(map(str, game[0].get("similar_games")[:10])).strip('[]') # Join ids together like '7, 8, 31, 32', limit to 10 entries
+                similar_games = requests.get(
+                    'https://api-v3.igdb.com/games',
+                    headers={'user-key':'2ba120e8696301c4263b2b19e68e59e6'},
+                    data='where id = ({}); fields name;'.format(similar_games_string)
+                ).json()
+
+                # Build the string to display consisting of the names of similar games
+                self.game_info_similar_games = ', '.join([sg.get("name") for sg in similar_games])
 
             # ===== Time to beat lookup =====
+            if game[0].get("time_to_beat") is not None:
+                time_to_beat = requests.get(
+                    'https://api-v3.igdb.com/time_to_beats',
+                    headers={'user-key':'2ba120e8696301c4263b2b19e68e59e6'},
+                    data='where id = {}; fields completely,hastly,normally; limit 1;'.format(game[0].get("time_to_beat"))
+                ).json()
+
+                # If we found it
+                if time_to_beat[0] is not None:
+                    times = []
+                    if time_to_beat[0].get("normally") is not None:
+                        times.append( "Normal: {0:.1f} hours".format( int(time_to_beat[0].get("normally")) / 3600.0) ) # Convert seconds to int and then convert to hours
+                    if time_to_beat[0].get("hastly") is not None:
+                        times.append( "Hasty: {0:.1f} hours".format( int(time_to_beat[0].get("hastly")) / 3600.0) ) # Convert seconds to int and then convert to hours
+                    if time_to_beat[0].get("completely") is not None:
+                        times.append( "Completely: {0:.1f} hours".format( int(time_to_beat[0].get("completely")) / 3600.0) ) # Convert seconds to int and then convert to hours
+
+                    self.game_info_time_to_beat = ', '.join(times)
 
             # ===== Video lookup =====
 
             # ===== Website lookup =====
             if game[0].get("websites") is not None:
-                website_id_string = ', '.join(map(str, game[0].get("websites")[:10])).strip('[]') # Join ids together like '7, 8, 31, 32'
+                website_id_string = ', '.join(map(str, game[0].get("websites")[:10])).strip('[]') # Join ids together like '7, 8, 31, 32', limit to 10 entries
                 websites = requests.get(
                     'https://api-v3.igdb.com/websites',
                     headers={'user-key':'2ba120e8696301c4263b2b19e68e59e6'},
@@ -215,7 +243,6 @@ class Key(models.Model):
                 # Rip website data from following format based on category:
                 # [{'id': 56823, 'category': 1, 'url': 'http://wanderso.ng'}, {'id': 56824, 'category': 13, 'url': 'https://store.steampowered.com/app/530320'}]
                 for w in websites:
-                    print(w)
                     if w.get("category") == WebsiteTypes.OFFICIAL.value:
                         self.game_info_official_url = w.get("url")
                     elif w.get("category") == WebsiteTypes.STEAM.value:
