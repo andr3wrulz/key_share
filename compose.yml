@@ -1,0 +1,8 @@
+version: '3'
+services:
+  key_share:
+    image: andrewgeltz/key_share
+    ports:
+      - "8000:8000"
+    volumes:
+      - "${USERDIR}/docker/key_share/db.sqlite3:/usr/src/app/db.sqlite3"
