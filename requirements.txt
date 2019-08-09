@@ -1,2 +1,4 @@
 gunicorn
+requests
+django
 django_crispy_forms
