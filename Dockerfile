@@ -14,5 +14,8 @@ COPY . .
 # Expose the application on port 8000
 EXPOSE 8000
 
+# Generate the migrations
+RUN python manage.py makemigrations key_share_app
+
 # Start the server
-CMD ["/start.sh"]
+CMD ["./start_server.sh"]
