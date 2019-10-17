@@ -217,7 +217,7 @@ class Key(models.Model):
                 ).json()
 
                 # If we found it
-                if time_to_beat[0] is not None:
+                if not time_to_beat:
                     times = []
                     if time_to_beat[0].get("normally") is not None:
                         times.append( "Normal: {0:.1f} hours".format( int(time_to_beat[0].get("normally")) / 3600.0) ) # Convert seconds to int and then convert to hours
