@@ -36,7 +36,7 @@ Login
 I have included a docker-compose file in the repository to make deployments easy. This assumes you have docker and docker compose installed.
 1. Grab the compose.yml file from the repo
 2. Edit the compose file as desired (you may want to change exposed ports or the location of the sqlite database file)
-3. Make sure you create a blank database file so docker doesn't try to mount it as a directory, ```cd /you/desired/dir && touch db.sqlite3```
+3. Create two files in your mounted directory django_secret.txt (generate a django key with ```python -c 'import random; print("".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)]))'```) and igdb_api.txt (put your api key from https://api.igdb.com/ here)
 4. Start the container ```docker-compose -f compose.yml up -d```
 5. Create a super user account in the database ```docker exec -it key_share python /usr/src/app/manage.py createsuperuser```
 ![Create Super User](https://i.imgur.com/71TvUek.png)
