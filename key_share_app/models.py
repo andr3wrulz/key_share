@@ -97,10 +97,10 @@ class Key(models.Model):
         # ===== Initial Game query =====
         game = requests.get(
             'https://api-v3.igdb.com/games/',
-            headers={'user-key':'2ba120e8696301c4263b2b19e68e59e6'},
+            headers={'user-key':'249db3f6c0d0e2ae03457e267b8d00a4'},
             data='search "' + self.name + '"; fields name,total_rating,total_rating_count,summary,url,time_to_beat,cover,category,genres,websites,first_release_date,involved_companies,keywords,multiplayer_modes,similar_games,storyline,screenshots,videos; limit 1;'
         ).json()
-        print(game)
+        print(str(game).encode('ascii', 'ignore').decode('ascii'))
 
         # If we got something from igdb
         if len(game) == 1:
@@ -120,7 +120,7 @@ class Key(models.Model):
             if game[0].get("cover") is not None:
                 cover = requests.get(
                     'https://api-v3.igdb.com/covers',
-                    headers={'user-key':'2ba120e8696301c4263b2b19e68e59e6'},
+                    headers={'user-key':'249db3f6c0d0e2ae03457e267b8d00a4'},
                     data='where id = {}; fields url,height,width; limit 1;'.format(game[0].get("cover"))
                 ).json()
                 #print(cover)
@@ -136,7 +136,7 @@ class Key(models.Model):
                 genre_id_string = ', '.join(map(str, game[0].get("genres")[:10])).strip('[]') # Join ids together like '7, 8, 31, 32', limit to 10 entries
                 genres = requests.get(
                     'https://api-v3.igdb.com/genres',
-                    headers={'user-key':'2ba120e8696301c4263b2b19e68e59e6'},
+                    headers={'user-key':'249db3f6c0d0e2ae03457e267b8d00a4'},
                     data='where id = ({}); fields name;'.format(genre_id_string)
                 ).json()
                 #print(genres)
@@ -151,14 +151,14 @@ class Key(models.Model):
                 involved_companies_string = ', '.join(map(str, game[0].get("involved_companies")[:10])).strip('[]') # Join ids together like '7, 8, 31, 32', limit to 10 entries
                 involved_companies = requests.get(
                     'https://api-v3.igdb.com/involved_companies',
-                    headers={'user-key':'2ba120e8696301c4263b2b19e68e59e6'},
+                    headers={'user-key':'249db3f6c0d0e2ae03457e267b8d00a4'},
                     data='where id = ({}) & developer = true; fields company; limit 1;'.format(involved_companies_string)
                 ).json()
                 # If we found a involved company with the developer flag
                 if len(involved_companies) == 1:
                     developer = requests.get(
                         'https://api-v3.igdb.com/companies',
-                        headers={'user-key':'2ba120e8696301c4263b2b19e68e59e6'},
+                        headers={'user-key':'249db3f6c0d0e2ae03457e267b8d00a4'},
                         data='where id = {}; fields name; limit 1;'.format(involved_companies[0].get("id"))
                     ).json()
                     # If we found the company that developed the game
@@ -170,7 +170,7 @@ class Key(models.Model):
                 keyword_string = ', '.join(map(str, game[0].get("keywords")[:10])).strip('[]') # Join ids together like '7, 8, 31, 32', limit to 10 entries
                 keywords = requests.get(
                     'https://api-v3.igdb.com/keywords',
-                    headers={'user-key':'2ba120e8696301c4263b2b19e68e59e6'},
+                    headers={'user-key':'249db3f6c0d0e2ae03457e267b8d00a4'},
                     data='where id = ({}); fields name;'.format(keyword_string)
                 ).json()
 
@@ -186,7 +186,7 @@ class Key(models.Model):
                 screenshot_string = ', '.join(map(str, game[0].get("screenshots")[:10])).strip('[]') # Join ids together like '7, 8, 31, 32', limit to 10 entries
                 screenshot = requests.get(
                     'https://api-v3.igdb.com/screenshots',
-                    headers={'user-key':'2ba120e8696301c4263b2b19e68e59e6'},
+                    headers={'user-key':'249db3f6c0d0e2ae03457e267b8d00a4'},
                     data='where id = ({}); fields url;'.format(screenshot_string)
                 ).json()
 
@@ -201,7 +201,7 @@ class Key(models.Model):
                 similar_games_string = ', '.join(map(str, game[0].get("similar_games")[:10])).strip('[]') # Join ids together like '7, 8, 31, 32', limit to 10 entries
                 similar_games = requests.get(
                     'https://api-v3.igdb.com/games',
-                    headers={'user-key':'2ba120e8696301c4263b2b19e68e59e6'},
+                    headers={'user-key':'249db3f6c0d0e2ae03457e267b8d00a4'},
                     data='where id = ({}); fields name;'.format(similar_games_string)
                 ).json()
 
@@ -212,12 +212,12 @@ class Key(models.Model):
             if game[0].get("time_to_beat") is not None:
                 time_to_beat = requests.get(
                     'https://api-v3.igdb.com/time_to_beats',
-                    headers={'user-key':'2ba120e8696301c4263b2b19e68e59e6'},
+                    headers={'user-key':'249db3f6c0d0e2ae03457e267b8d00a4'},
                     data='where id = {}; fields completely,hastly,normally; limit 1;'.format(game[0].get("time_to_beat"))
                 ).json()
 
                 # If we found it
-                if time_to_beat[0] is not None:
+                if time_to_beat:
                     times = []
                     if time_to_beat[0].get("normally") is not None:
                         times.append( "Normal: {0:.1f} hours".format( int(time_to_beat[0].get("normally")) / 3600.0) ) # Convert seconds to int and then convert to hours
@@ -235,7 +235,7 @@ class Key(models.Model):
                 website_id_string = ', '.join(map(str, game[0].get("websites")[:10])).strip('[]') # Join ids together like '7, 8, 31, 32', limit to 10 entries
                 websites = requests.get(
                     'https://api-v3.igdb.com/websites',
-                    headers={'user-key':'2ba120e8696301c4263b2b19e68e59e6'},
+                    headers={'user-key':'249db3f6c0d0e2ae03457e267b8d00a4'},
                     data='where id = ({}); fields category,url;'.format(website_id_string)
                 ).json()
                 #print(websites)
