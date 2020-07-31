@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
+from django.core.exceptions import ImproperlyConfigured
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,7 +22,38 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '3plsby=ql0gp5j+(3+%lkn*vpe56^swxj*8g+hhpplv#=ksie)'
+def get_secret_key():
+    # Try and get it from the env var
+    try:
+        return os.environ['DJANGO_SECRET_KEY']
+    except KeyError:
+        # No env var, try the file
+        try:
+            f = open('mount/django_secret.txt')
+            return f.read().strip()
+        except IOError: 
+            raise ImproperlyConfigured("Env var DJANGO_SECRET_KEY needs to be set or django_secret.txt needs to be populated.")
+        finally:
+            f.close()
+
+SECRET_KEY = get_secret_key()
+
+# Load api key
+def get_igdb_api_key():
+    # Try and get it from the env var
+    try:
+        return os.environ['IGDB_API_KEY']
+    except KeyError:
+        # No env var, try the file
+        try:
+            f = open('mount/igdb_api.txt')
+            return f.read().strip()
+        except IOError: 
+            raise ImproperlyConfigured("Env var IGDB_API_KEY needs to be set or igdb_api.txt needs to be populated.")
+        finally:
+            f.close()
+
+IGDB_API_KEY = get_igdb_api_key()
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
